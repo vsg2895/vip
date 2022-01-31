@@ -67,7 +67,7 @@
                           action="{{ route('detail-send-message', ['locale' => app()->getLocale(), 'geter_id' => $post->user_id]) }}"
                           method="post">
                         @csrf
-                        <button form="sendMessageToPostAutherUserForm" type="subimt" id="sendMessageForm{{Auth::user()->id}}"
+                        <button form="sendMessageToPostAutherUserForm" type="subimt" id="sendMessageForm"
                                 class="btn btn-main text-light">{{ translating('send-message') }}</button>
                     </form>
                 </div>

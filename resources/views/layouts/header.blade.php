@@ -146,13 +146,12 @@
                 <ul class="navbar-nav ml-auto w-auto ul-end">
                 @auth
                     <!-- User menu -->
-                        <div class="user-menu position-relative">
+                        <div class="user-menu position-relative" id="user-notify-menu{{ Auth::user()->id }}">
+{{--                            @dump($user_unreaded_messages_count)--}}
                             @if($user_unreaded_messages_count)
                                 {{--                                {{ intval($user_unreaded_messages_count) }}--}}
                                 <span class="bg-danger messages-count" id="message_icon">
-{{--                                     <i class="fas fa-spinner fa-spin"></i>--}}
                                     <i class="fas fa-spinner fa-comment-dots"></i>
-
                                 </span>
 
                             @endif

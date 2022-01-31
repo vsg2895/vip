@@ -16,17 +16,17 @@
 
         <!-- Settings -->
         <li class="w-100 d-block mb-1 w-100 text-center shadow-sm">
-            <a href="{{ route('account-settings-main', ['locale' => app()->getLocale()]) }}" data-segment="settings" class="p-3 d-block account-aside-url @if(isset($page_name_account_aside) && $page_name_account_aside == 'settings') active @endif">{{ translating('settings') }}</a>
+            <a href="{{ route('account-settings-main', ['locale' => app()->getLocale()]) }}" data-segment="settings/profile" class="p-3 d-block account-aside-url @if(isset($page_name_account_aside) && $page_name_account_aside == 'settings') active @endif">{{ translating('settings') }}</a>
         </li>
 
         <!-- Wallet -->
         <li class="w-100 d-block mb-1 w-100 text-center shadow-sm">
-            <a href="{{ route('account-wallet', ['locale' => app()->getLocale()]) }}" data-segment="wallet" class="p-3 d-block account-aside-url @if(isset($page_name_account_aside) && $page_name_account_aside == 'wallet') active @endif">{{ translating('wallet') }}</a>
+            <a href="{{ route('account-wallet', ['locale' => app()->getLocale()]) }}" data-segment="wallet/main" class="p-3 d-block account-aside-url @if(isset($page_name_account_aside) && $page_name_account_aside == 'wallet') active @endif">{{ translating('wallet') }}</a>
         </li>
 
         <!-- Wishlist -->
         <li class="w-100 d-block mb-1 w-100 text-center shadow-sm">
-            <a href="{{ route('account-wishlist', ['locale' => app()->getLocale()]) }}" data-segment="wishlist" class="p-3 d-block account-aside-url @if(isset($page_name_account_aside) && $page_name_account_aside == 'wishlist') active @endif">{{ translating('wishlist') }}</a>
+            <a href="{{ route('account-wishlist', ['locale' => app()->getLocale()]) }}" data-segment="wishlist/posts" class="p-3 d-block account-aside-url @if(isset($page_name_account_aside) && $page_name_account_aside == 'wishlist') active @endif">{{ translating('wishlist') }}</a>
         </li>
     </ul>
 </aside>

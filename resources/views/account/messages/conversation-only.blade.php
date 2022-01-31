@@ -1,7 +1,8 @@
 <!-- Chat Header -->
-<div class="row w-100 no-gutters d-block position-relative">
+{{--@dd($friend);--}}
+<div class="row w-100 no-gutters d-block position-relative conversetion-first-row">
     <!-- URL -->
-    <a class="frien-link" href="{{ route('users', ['locale' => app()->getLocale(), 'id' => $friend->id]) }}">
+    <a class="friend-link" href="{{ route('users', ['locale' => app()->getLocale(), 'id' => $friend->id]) }}">
         <!-- Check image -->
     @if($friend->role == 'facebook_user' ||  $friend->role == 'google_user') <!-- Facebook -->
         <!-- Image -->
@@ -224,7 +225,7 @@
 @endif
 
 <!-- New Message Content -->
-    <div class="newMessageContnet" id="newMessageContnet">
+    <div class="newMessageContnet" id="newMessageContnet{{ Auth::user()->id }}">
 
     </div>
 

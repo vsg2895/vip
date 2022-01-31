@@ -581,6 +581,9 @@ $(document).on('click', '#settingsTab .nav-link', function (e) {
 
             // Get url segment
             const urlSegment = self.attr('aria-controls');
+            // const base_segment = self.attr('data-url').substring(self.attr('data-url').lastIndexOf('/') + 1);
+            // console.log(urlSegment);
+            // console.log(base_segment);
 
             // Check url charecters has <<settings>> string
             if (currentUrl.indexOf('settings/') > -1) {
@@ -945,7 +948,6 @@ $(document).on('click', 'a.delete-user-action', function (e) {
 $(document).on('click', '.account-aside-url', function (e) {
     // Disabled default events
     e.preventDefault();
-
     // Get this
     const self = $(this);
 
@@ -964,12 +966,13 @@ $(document).on('click', '.account-aside-url', function (e) {
             <span class="sr-only">Loading...</span> \
         </div>'
     );
-
+    console.log(url);
     // Send request
     axios.get(url)
         // Success
         .then(res => {
             // Get currenct url
+            // alert();
             const currentUrl = window.location.href;
 
             const segment = self.attr('data-segment');
@@ -980,9 +983,9 @@ $(document).on('click', '.account-aside-url', function (e) {
             window.history.pushState({}, document.title, "/" + locale + "/account" + '/' + segment);
 
             // Check messages page
-            if (window.location.href.indexOf('messages') > -1) {
-                window.location = window.location.href;
-            }
+            // if (window.location.href.indexOf('messages') > -1) {
+            //     window.location = window.location.href;
+            // }
 
             // Reintializate lazy loading
             $(function () {
@@ -990,10 +993,12 @@ $(document).on('click', '.account-aside-url', function (e) {
             });
 
             // Remove old posts and push new posts to load content
+            console.log($('.load-content'))
             $('.load-content').html(res.data);
-
+            // alert();
             // Check CKEeditor important
             if ($("textarea").length > 0) {
+                // alert('textarea')
                 setTimeout(function () {
                     CKEDITOR.remove();
 
@@ -1023,6 +1028,91 @@ if ($('.messages-section').length > 0) {
     $('.messages-section').scrollTop($('.messages-section')[0].scrollHeight);
 }
 
+// GET CURRENT LOCAL LANGUAGE
+
+var current_url = window.location.href;
+var array_current_url = current_url.split('/');
+var lang_array = ['hy', 'ru', 'en'];
+var current_lang = null;
+
+function get_locale(value) {
+    let lang = "";
+    if (lang_array.indexOf(value) !== -1) {
+        lang = value;
+    }
+    return lang;
+}
+
+current_lang = array_current_url.map(get_locale);
+current_lang = current_lang.filter(function (el) {
+    return el != "";
+})
+current_lang = current_lang.length == 1 ? current_lang[0] : 'hy';
+console.log(current_lang);
+
+// END GETTING LOCAL LANGUAGE
+
+// function fill_current_conversation(snapshot, data, userId, userRole, userImg, userFullName, user_url, auth_id, authRole, authImg, authFullName, auth_url) {
+//     <!-- Chat Header -->
+//     var conversetion_first_div = $("<div class='row w-100 no-gutters d-block position-relative conversetion-first-row'></div>")
+//     var in_conversetion_first_div_a = $("<a class='friend-link'></a>")
+//     in_conversetion_first_div_a.attr('href', user_url);
+//     var in_conversetion_first_div_a_img = $("<img class='rounded-circle responsive friend-image float-left'/>");
+//     in_conversetion_first_div_a_img.attr('src', userRole == "facebook_user" || userRole == "google_user" ? userImg : '../../img/users/' + userImg);
+//     in_conversetion_first_div_a_img.attr('alt', userFullName);
+//     var in_conversetion_first_div_a_h3 = $("<h3 class='d-inline friend-user float-left ml-2 mt-1'>" + userFullName + "</h3>");
+//     var in_conversetion_first_div_clearfix = $("<div class='clearfix'></div>");
+//     var hr = $("<hr>");
+//     in_conversetion_first_div_a.append(in_conversetion_first_div_a_img);
+//     in_conversetion_first_div_a.append(in_conversetion_first_div_a_h3);
+//     conversetion_first_div.append(in_conversetion_first_div_a)
+//     conversetion_first_div.append(in_conversetion_first_div_clearfix)
+//     conversetion_first_div.append(hr);
+//     $('.chat-section').append(conversetion_first_div);
+//     <!-- End Chat Header -->
+//
+//     <!-- Messages Section -->
+//     var messages_section_div = $("<div class='row w-100 no-gutters d-block mt-3 messages-section'></div>");
+//
+//     var messages_section_parent_div = $("<div></div>");
+//     var in_messages_section_parent_div_a = $("<a></a>");
+//     var in_messages_section_parent_div_a_img = $("<img />");
+//     var messages_section_parent_message_text_div = $("<div></div>");
+//     var in_messages_section_parent_message_text_div_span = $("<span></span>");
+//     var in_messages_section_parent_message_text_div_w_100 = $("<div class='w-100 d-block'></div>");
+//     var in_messages_section_parent_message_text_div_small = $("<small></small>");
+//     var in_messages_section_parent_message_text_div_small_i = $("<i class='far fa-clock'></i>");
+//     var messages_section_parent_div_clearfix = $("<div class='clearfix'></div>")
+//
+//     // New Message Content
+//     var messages_section_div_new_message_content = $("<div class='newMessageContnet' id='newMessageContnet'></div>");
+//     var messages_section_div_clearfix = $("<div class='clearfix'></div>");
+//     if (snapshot.exists() && snapshot.getChildrenCount() != 0) {
+//         for (const key in data) {
+//             <!-- Message from friend variant -->
+//             if (data[key].senderId == userId) {
+//
+//             }
+//             <!-- My Message variant -->
+//             else {
+//
+//             }
+//         }
+//     } else {
+//         alert("No Result In Database");
+//     }
+//
+//
+//     <!-- My Message variant -->
+//
+//
+//     // Check rootRef returned response count
+//
+//
+//     <!-- End Messages Section -->
+//
+// }
+
 // Select Chat To Start Conversation Event
 $(document).on('click', '.chat-user-list a', function (e) {
     // alert();
@@ -1037,7 +1127,7 @@ $(document).on('click', '.chat-user-list a', function (e) {
 
     // Get this
     let self = $(this);
-
+    receiver_id = self.attr('data-id');
     // Add loading in contnet
     $('.chat-section').html('<div class="spinner-border mt-5 d-block mx-auto" role="status"></div>');
 
@@ -1049,19 +1139,44 @@ $(document).on('click', '.chat-user-list a', function (e) {
 
     // Get selected user id
     const userId = self.attr('data-id');
-    // $('#sendMessageForm').attr('data-receiver', userId);
-    console.log(userId);
+    // const userRole = self.attr('data-role');
+    // const userImg = self.attr('data-image');
+    // var userFullNameTrim = self.parent().find('.chat-name').text();
+    // const userFullName = userFullNameTrim.replace(/^\s+|\s+$/gm, '');
+    // const user_url = route('users', [current_lang, userId]);
+    // const authRole = self.attr('data-authRole');
+    // const authImg = self.attr('data-authImage');
+    // const authFullName = self.attr('data-authFullName');
+    // const auth_url = route('account-posts', current_lang);
+    // var encode_path = (parseInt(userId) * parseInt(auth_id)) - (parseInt(userId) + parseInt(auth_id));
+    // // $('#sendMessageForm').attr('data-receiver', userId);
+    // console.log(userId);
+    // console.log(userRole);
+    // console.log(userImg);
+    // console.log(userFullName);
+    // console.log(auth_id);
+    // console.log(encode_path);
+    //
+    // var rootRef = firebase.database().ref("messages/" + encode_path);
+    // rootRef.once('value', (snapshot) => {
+    //     var data = snapshot.val();
+    //     // $('.chat-section').html("");
+    //     console.log(data)
+    //
+    //     // fill_current_conversation(snapshot,data,userId,userRole,userImg,userFullName,user_url,auth_id,authRole,authImg,authFullName,auth_url);
+    //     // $('.chat-section').html("")
+    // });
+    // var encode_data = (parseInt(userId) * parseInt(auth_id)) - (parseInt(userId) + parseInt(auth_id));
+    // console.log(encode_data);
     // Send data to controller
     axios.get(self.attr('href'))
         .then(res => {
-            if (res.data) { // Request sned and get success
-                // Show users list mobiel event
+            if (res.data) { // Request send and get success
+                // Show users list mobiel even
                 if (window.innerWidth <= '768') {
                     $('.list-chat-item').stop().slideToggle();
-
                     // Increment
                     counterUsersList++;
-
                     // Check data
                     if (counterUsersList % 2 == 0) {
                         // Set this text
@@ -1071,9 +1186,9 @@ $(document).on('click', '.chat-user-list a', function (e) {
                         $('.see-users-list').html($('.see-users-list').attr('data-close'));
                     }
                 }
-
-                // Push chat to contnet
-                $('.chat-section').html(res.data);
+                console.log('abc');
+                // Push chat to content
+                $('.chat-section').html(res.data.view);
 
                 // Content Start to End of Page
                 $('.messages-section').scrollTop($('.messages-section')[0].scrollHeight);
@@ -1100,225 +1215,26 @@ $(document).on('click', '.chat-user-list a', function (e) {
                 $('#sendMessageForm').attr('action', newAction);
             } else {
                 // Response
-                alert('Failed to start conversion');
+                alert('Failed to start conversion elseee');
 
                 // Reload
                 location.reload();
             }
         }).catch(res => { // Request error
         // Response
+        console.log(res);
         alert('Failed to send message');
 
         // Reload
-        location.reload();
+        // location.reload();
     });
 });
 
-// Firebase Message Send Function
-function writeUsermessage(senderId, receiverId, message, rootRef) {
-    // setTimeout(function () {
-
-
-    // return unique_key;
-    // }, 200);
-    // firebase.database().ref('messages/' + senderId + '_' + receiverId + '_' + dateNow + '-' + Math.floor((Math.random() * 100000) + 1)).set({
-    //     senderId: senderId,
-    //     receiverId: receiverId,
-    //     message: message
-    // });
-}
 
 // Send Message Event
-const auth_id = $('#auth_id').val();
-$(document).on('submit', '#sendMessageForm' + auth_id, function (e) {
-    // Disabled default events
-    console.log('ha ba');
-    e.preventDefault();
-    // Get this
-    let self = $(this);
-    // Get form inputs data
-    // const dataString = new FormData(this);
-    const receiver_id = self.attr('action').substring(self.attr('action').lastIndexOf('/') + 1);
-    const sender_id = self.attr('data-id');
-    const messaage = $('textarea[form=sendMessageForm' + auth_id + ']').val();
-    const dateNow = Date.now();
-    console.log(receiver_id);
-    console.log(sender_id);
-    console.log(messaage);
-    var bazm = parseInt(sender_id) * parseInt(receiver_id);
-    var gum = parseInt(sender_id) + parseInt(receiver_id);
-    var encode_path = bazm - gum;
-    var rootRef = firebase.database().ref("messages/" + encode_path);
-    // Firebase realtime database chat Logic
-    $('.newMessageContnet').html("");
-    // var unique_key = writeUsermessage(sender_id, receiver_id, messaage, rootRef)
-    var unique_key = rootRef.push().key;
-    rootRef.child(unique_key).set({
-        "senderId": sender_id,
-        "receiverId": receiver_id,
-        "message": messaage
+var auth_id = $('#auth_id').val();
+// console.log(auth_id);
 
-    }, function (error) {
-        if (error) {
-            alert(error);
-        } else {
-
-            rootRef.on('child_added', (snapshot) => {
-                // starCountRef.orderByKey().limitToLast(1).on('value', (snapshot) => {
-                var data = snapshot.val();
-                // $('.chat-section').html("");
-                console.log(data)
-                // console.log(data[unique_key]);
-                // updateStarCount(postElement, data);
-                // const last_element_name = Object.keys(data)[Object.keys(data).length - 1]
-                // const last_element = data[last_element_name];
-                // console.log(last_element, 'last');
-                // for (const key in data) {
-                //
-                //     console.log(`${key}: ${data[key]}`);
-                // }
-                const senderUserId = data.senderId;
-                const currentUserId = $('#sendMessageForm' + auth_id).attr('data-id');
-                const receiverUserId = data.receiverId;
-                const message_text = data.message;
-                // console.log(senderUserId, 'sender');
-                // console.log(currentUserId, 'sendformuser');
-                // const itemId = data.itemId;
-                // Get modal url
-                // alert(senderUserId)
-                // alert(currentUserId)
-                //Add it after sendmessage axios in then
-
-                // let modalUrl = $('.more-info-message').attr('data-modal-url').split('/destroy/')[0] + '/destroy/' + itemId;
-                //
-                // // Get modal url
-                // let updateUrl = $('.more-info-message').attr('data-update-url').split('/update/')[0] + '/update/' + itemId;
-
-                // add its in
-                // data-item-id="' + itemId + '"
-                // <div className="row no-gutters w-100 d-block mt-2 float-right my-4 position-relative m-item m-item-m new-added">
-
-//Add it after sendmessage axios in then
-                // I am sended message
-                console.log(senderUserId);
-                console.log(currentUserId);
-
-                // $('.newMessageContnet').html("");
-                if (senderUserId == currentUserId) {
-                    // console.log($('.newMessageContnet' + senderUserId));
-                    // console.log($('.newMessageContnet' + receiverUserId));
-                    // Mesasge append to conversation
-                    // alert('steim')
-                    $('.newMessageContnet').append(' \
-            <!-- Contnet --> \
-            <div class="row no-gutters w-100 d-block mt-2 float-right my-4 position-relative m-item m-item-m new-added"> \
-                <!-- URL --> \
-                <a href="#"> \
-                    <!-- My Image --> \
-                    <img class="d-inline-block float-right rounded-circle" width="45px" src="' + myImg + '" title="' + fullName + '" alt="' + fullName + '"> \
-                </a> \
-                <div class="p-2 rounded mr-2 float-right d-inline bg-light w-75"> \
-                    <span class="text-message">' + message_text + '</span> \
-                    <div class="w-100 d-block"> \
-                        <small class="text-muted float-right"><i class="far fa-clock"></i> ' + $('#dataSendMessageNow').text() + '</small> \
-                    </div> \
-                </div> \
-                <div class="clearfix"></div> \
-            </div> ');
-
-                    // Scroll to down
-                    $('.messages-section').scrollTop($('.messages-section')[0].scrollHeight);
-                } else {
-                    // I am received message
-                    // Get my user fullname
-                    const fullName_friend = $('.friend-user').text();
-
-                    // Get friend user img
-                    const friendImg = $('.friend-image').attr('src');
-
-                    // Get friend user link
-                    const friendLink = $('.friend-link').attr('href');
-
-                    // Add alert to alerts list
-                    $('.alerts-section').prepend(' \
-            <!-- Alert --> \
-            <a href="' + friendLink + '" class="alert alert-warning alert-dismissible fade show w-100 d-block" role="alert"> \
-                <!-- Sender Data --> \
-                <strong>' + fullName_friend + '</strong>  \
-                <!-- Description --> \
-                <div class="w-100 d-block clearfix"> \
-                    ' + message_text + '\
-                </div>\
-                <!-- Break -->\
-                <hr>\
-                <!-- Time -->\
-                <div class="w-100 d-block clearfix">\
-                    <i class="far fa-clock"></i> Now\
-                </div>\
-                <!-- Close Button -->\
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>\
-            </a>\
-        ');
-                    // alert('ste')
-                    // Mesasge append to conversation
-                    $('.newMessageContnet').append(' \
-            <!-- Contnet --> \
-            <div class="row no-gutters w-100 d-block mt-2 float-right my-4 position-relative m-item-m"> \
-                <!-- URL --> \
-                <a href="' + friendLink + '"> \
-                    <!-- My Image --> \
-                    <img class="d-inline-block float-left rounded-circle" width="45px" src="' + friendImg + '" title="' + fullName_friend + '" alt="' + fullName_friend + '"> \
-                </a> \
-                <div class="p-2 rounded mr-2 float-left d-inline bg-light w-75"> \
-                    <span class="text-message">' + message_text + '</span> \
-                    <div class="w-100 d-block"> \
-                        <small class="text-muted float-left"><i class="far fa-clock"></i> ' + $('#dataSendMessageNow').text() + '</small> \
-                    </div> \
-                </div> \
-                <div class="clearfix"></div> \
-            </div> ');
-
-                    // Scroll to down
-                    $('.messages-section').scrollTop($('.messages-section')[0].scrollHeight);
-                }
-                $('textarea[form=sendMessageForm' + auth_id + ']').val("");
-
-            });
-
-
-        }
-    });
-    console.log(encode_path);
-    console.log(unique_key);
-    // var starCountRef = firebase.database().ref();
-
-
-    // var dbRef = firebase.database().ref().child('my_value');
-    // dbRef.on('value', snap => console.log(snap.val()));
-
-    // End Firebase Code
-// alert(self.attr('action'))
-    // Send data to controller
-    // axios.post(self.attr('action'), dataString)
-    //     .then(res => {
-    //         if (res.data) { // Request sned and get success
-    //             // Scroll to down
-    //             console.log(res.data)
-    //             $('.messages-section').scrollTop($('.messages-section')[0].scrollHeight);
-    //             console.log($('#sendMessageForm').closest('.chat-messenger-section').prev().find('.chat-row').find('.chat-section').find('.messages-section'));
-    //
-    //             // Clear text from textarea
-    //             $('textarea[form="sendMessageForm"]').val('');
-    //             // $('.chat-user-list a').trigger('click');
-    //         } else {
-    //             // Reload Page
-    //             location.reload();
-    //         }
-    //     }).catch(res => { // Request error
-    //     // Reload Page
-    //     location.reload();
-    // });
-});
 
 // Message Actions Button Click Event
 $(document).on('click', '.more-info-message', function (e) {

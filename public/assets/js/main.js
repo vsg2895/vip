@@ -450,3 +450,233 @@ $(document).on('click', '.create-post-cats li', function (e) {
     $(this).find('ul').eq(0).stop().show();
 });
 
+
+// Listen Messages Socket
+
+// Check Url Contains Or No
+
+var arr_url = window.location.href.split('/');
+console.log(arr_url);
+
+// Check value isset in array
+function inArray(needle, haystack) {
+    var length = haystack.length;
+    for (var i = 0; i < length; i++) {
+        if (haystack[i] == needle) return true;
+    }
+    return false;
+}
+
+console.log(inArray('conversation', arr_url));
+console.log($('#active_chat_user').length);
+
+var active_user_id = 0;
+if ($('#active_chat_user').length > 0) {
+    var active_user_id = $('#active_chat_user').val();
+    var elem = $('a[data-id=' + active_user_id + ']');
+    elem.parent().addClass('active');
+}
+console.log(active_user_id);
+var initialRender = true;
+var auth_id = $('#auth_id').val();
+var receiver_id = active_user_id;
+setTimeout(function () {
+    var rootRef = firebase.database().ref("messages/");
+    rootRef.on('value', (snapshot) => {
+        console.log('miacav')
+        if (initialRender) {
+            initialRender = false;
+        } else {
+            var data = snapshot.val();
+            console.log(data);
+            console.log(receiver_id);
+            console.log(auth_id);
+            if (auth_id != 0 && receiver_id != 0) {
+                var encode_data = (parseInt(auth_id) * parseInt(receiver_id)) - (parseInt(auth_id) + parseInt(receiver_id))
+                console.log(encode_data)
+                console.log(data[encode_data]);
+                last_message = Object.keys(data[encode_data])[Object.keys(data[encode_data]).length - 1];
+                last_elem = data[encode_data][last_message];
+                console.log(data[encode_data][last_message]);
+                console.log(last_elem.receiverId);
+                console.log($('#user-notify-menu' + last_elem.receiverId));
+                if (last_elem.senderId == auth_id) {
+                    // console.log($('.newMessageContnet' + senderUserId));
+                    // console.log($('.newMessageContnet' + receiverUserId));
+                    // Mesasge append to conversation
+                    $('#newMessageContnet' + last_elem.senderId).append(' \
+            <!-- Contnet --> \
+            <div class="row no-gutters w-100 d-block mt-2 float-right my-4 position-relative m-item m-item-m new-added"> \
+                <!-- URL --> \
+                <a href="#"> \
+                    <!-- My Image --> \
+                    <img class="d-inline-block float-right rounded-circle" width="45px" src="' + myImg + '" title="' + fullName + '" alt="' + fullName + '"> \
+                </a> \
+                <div class="p-2 rounded mr-2 float-right d-inline bg-light w-75"> \
+                    <span class="text-message">' + last_elem.message + '</span> \
+                    <div class="w-100 d-block"> \
+                        <small class="text-muted float-right"><i class="far fa-clock"></i> ' + $('#dataSendMessageNow').text() + '</small> \
+                    </div> \
+                </div> \
+                <div class="clearfix"></div> \
+            </div> ');
+
+                    // Scroll to down
+                    $('.messages-section').scrollTop($('.messages-section')[0].scrollHeight);
+                } else {
+                    // I am received message
+                    // Get my user fullname
+                    const fullName_friend = $('.friend-user').text();
+
+                    // Get friend user img
+                    const friendImg = $('.friend-image').attr('src');
+
+                    // Get friend user link
+                    const friendLink = $('.friend-link').attr('href');
+
+                    // Add alert to alerts list
+                    $('.alerts-section').prepend(' \
+            <!-- Alert --> \
+            <a href="' + friendLink + '" class="alert alert-warning alert-dismissible fade show w-100 d-block" role="alert"> \
+                <!-- Sender Data --> \
+                <strong>' + fullName_friend + '</strong>  \
+                <!-- Description --> \
+                <div class="w-100 d-block clearfix"> \
+                    ' + last_elem.message + '\
+                </div>\
+                <!-- Break -->\
+                <hr>\
+                <!-- Time -->\
+                <div class="w-100 d-block clearfix">\
+                    <i class="far fa-clock"></i> Now\
+                </div>\
+                <!-- Close Button -->\
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>\
+            </a>\
+        ');
+                    // Mesasge append to conversation
+                    $('#newMessageContnet' + last_elem.receiverId).append(' \
+            <!-- Contnet --> \
+            <div class="row no-gutters w-100 d-block mt-2 float-right my-4 position-relative m-item-m"> \
+                <!-- URL --> \
+                <a href="' + friendLink + '"> \
+                    <!-- My Image --> \
+                    <img class="d-inline-block float-left rounded-circle" width="45px" src="' + friendImg + '" title="' + fullName_friend + '" alt="' + fullName_friend + '"> \
+                </a> \
+                <div class="p-2 rounded mr-2 float-left d-inline bg-light w-75"> \
+                    <span class="text-message">' + last_elem.message + '</span> \
+                    <div class="w-100 d-block"> \
+                        <small class="text-muted float-left"><i class="far fa-clock"></i> ' + $('#dataSendMessageNow').text() + '</small> \
+                    </div> \
+                </div> \
+                <div class="clearfix"></div> \
+            </div> ');
+
+                    // Scroll to down
+                    if ($('#new-message-in-user-list' + last_elem.senderId).length == 0) {
+                        $('#chat-user-list' + last_elem.senderId).append('<span class="real-message-impuls">\n' +
+                            '<i class="fas fa-circle new-message-in-user-list" id="new-message-in-user-list' + last_elem.senderId + '"></i>\n' +
+                            '</span>');
+                    }
+                    $('.messages-section').scrollTop($('.messages-section')[0].scrollHeight);
+                }
+                $('textarea[form=sendMessageForm]').val("");
+
+                // console.log(inArray('conversation', arr_url));
+                // console.log(receiver_id);
+                // if (!inArray('conversation', arr_url) && receiver_id != 0) {
+                // alert();
+
+                // }
+
+            } else {
+                console.log(auth_id)
+                var rootconversation = firebase.database().ref("last_added/");
+                rootconversation.on('value', (snapshot) => {
+                    console.log('miacav_erkrord')
+                    var data_current_conversation = snapshot.val();
+                    console.log(data_current_conversation.receiverId)
+                    console.log(data_current_conversation.senderId)
+                    console.log($('#user-notify-menu' + data_current_conversation.receiverId))
+                    console.log($('#chat-user-list' + data_current_conversation.senderId))
+                    if ($('#new-message-in-user-list' + data_current_conversation.senderId).length == 0) {
+                        $('#chat-user-list' + data_current_conversation.senderId).append('<span class="real-message-impuls">\n' +
+                            '<i class="fas fa-circle new-message-in-user-list" id="new-message-in-user-list' + data_current_conversation.senderId + '"></i>\n' +
+                            '</span>');
+                    }
+                    if ($('#message_icon').length == 0) {
+                        $('#user-notify-menu' + data_current_conversation.receiverId).append('<span class="bg-danger messages-count" id="message_icon">\n' +
+                            '<i class="fas fa-spinner fa-comment-dots"></i>\n' +
+                            '</span>');
+                    }
+
+                })
+
+            }
+        }
+    });
+    // rootRef.off();
+}, 1000)
+
+$(document).on('submit', '#sendMessageForm', function (e) {
+    // Disabled default events
+    console.log('ha ba');
+    e.preventDefault();
+    // Get this
+    let self = $(this);
+    // Get form inputs data
+    var dataString = new FormData(this);
+    receiver_id = self.attr('action').substring(self.attr('action').lastIndexOf('/') + 1);
+    var sender_id = self.attr('data-id');
+    var messaage = $('textarea[form=sendMessageForm]').val();
+    const dateNow = Date.now();
+    console.log(receiver_id);
+    console.log(sender_id);
+    console.log(messaage);
+    var bazm = parseInt(sender_id) * parseInt(receiver_id);
+    var gum = parseInt(sender_id) + parseInt(receiver_id);
+    var encode_path = bazm - gum;
+    var rootRef = firebase.database().ref("messages/" + encode_path);
+    var rootconversation = firebase.database().ref("last_added/");
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes();
+    // Firebase realtime database chat Logic
+    // $('.newMessageContnet').html("");
+    var unique_key = rootRef.push().key;
+    // rootRef.off();
+    rootRef.child(unique_key).set({
+        "senderId": sender_id,
+        "receiverId": receiver_id,
+        "message": messaage,
+        "created_at": time,
+
+    });
+    // rootRef.off();
+    rootconversation.set({
+        "senderId": sender_id,
+        "receiverId": receiver_id,
+    });
+    console.log(encode_path);
+    console.log(unique_key);
+    // End Firebase Code
+    // Send data to controller
+    axios.post(self.attr('action'), dataString)
+        .then(res => {
+            if (res.data) { // Request sned and get success
+                // Scroll to down
+                console.log(res.data)
+                $('.messages-section').scrollTop($('.messages-section')[0].scrollHeight);
+                console.log($('#sendMessageForm').closest('.chat-messenger-section').prev().find('.chat-row').find('.chat-section').find('.messages-section'));
+
+                // Clear text from textarea
+                $('textarea[form="sendMessageForm"]').val('');
+                // $('.chat-user-list a').trigger('click');
+            } else {
+                // Reload Page
+                location.reload();
+            }
+        }).catch(res => { // Request error
+        // Reload Page
+        location.reload();
+    });
+});

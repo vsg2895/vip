@@ -13,18 +13,18 @@
     <div class="row no-gutters">
         <!-- Price -->
         <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-            <span class="3bg-light p-1 rounded">{{ price_handler(Auth::user()->wallet['balance'], $currency->value) }}</spa3>
+            <span class="3bg-light p-1 rounded">{{ price_handler(Auth::user()->wallet['balance'], $currency->value) }}</span>
         </div>
 
         <!-- Description -->
         <div class="col-lg-6 col-md-6 col-sm-6 col-12">
-            <p class="h5">{{ translating('wallet-page-ballance-description') }}</p>
+            <p class="h5 not-background-p">{{ translating('wallet-page-ballance-description') }}</p>
         </div>
     </div>
 
     <!-- Title -->
     <h4 class="w-100 d-block my-3">{{ translating('charege-wallet-title') }}</h4>
-    
+
     @if(isset($payment_methods) && count($payment_methods) > 0)
         <!-- Payment Methods Tab -->
         <ul class="nav nav-tabs" id="paymentsTab" role="tablist">
@@ -76,7 +76,7 @@
                     @endif
 
                     <!-- Description -->
-                    <p class="h5 mt-2">{!! $payment_method->{'description_'.app()->getLocale()} !!}</p>
+                    <p class="h5 mt-2 not-background-p">{!! $payment_method->{'description_'.app()->getLocale()} !!}</p>
                 </div>
             @endforeach
         </div>

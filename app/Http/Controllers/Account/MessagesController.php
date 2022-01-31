@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use App\User;
 use App\ChatUserMessage;
 use App\ChatMessage;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class MessagesController extends Controller
 {
@@ -28,21 +30,29 @@ class MessagesController extends Controller
     public function index(Request $request, $locale = 'hy')
     {
         // Call socket
-        broadcast(new UserJoined(Auth::user()->id));
+//        broadcast(new UserJoined(Auth::user()->id));
 
         // Get middleware data
         $data = $request->data;
 
         // Get users data
-        $users = User::where('id', '!=', Auth::user()->id)->orderBy('id', 'desc')->get();
-//        $users =
-
+//        $users = User::where('id', '!=', Auth::user()->id)->orderBy('id', 'desc')->get();
+//        $users = DB::table('chat_user_messages')->where('sender_id', Auth::user()->id)->orWhere('receiver_id', Auth::user()->id)->groupBy('sender_id')->get();
+        $users_ids = ChatUserMessage::where('sender_id', Auth::user()->id)->orWhere('receiver_id', Auth::user()->id)->distinct('sender_id', 'receiver_id')->get(['sender_id', 'receiver_id'])->toArray();
+        $auth_user_unread_messages = ChatUserMessage::where(['receiver_id' => Auth::user()->id, 'seen_status' => 0])->distinct('sender_id')->get();
+//        dd($auth_user_unreaded_messages);
+        $array_user_values = [];
+        foreach ($users_ids as $elem) {
+            array_push($array_user_values, $elem['sender_id'] != Auth::user()->id ? $elem['sender_id'] : $elem['receiver_id']);
+        }
+        $users = User::whereIn('id', $array_user_values)->get();
         // Push data
         $data['users'] = $users;
+        $data['auth_user_unread_messages'] = $auth_user_unread_messages;
         $data['has_chat'] = true;
         // Push data
         $data['page_name_account_aside'] = 'messages';
-
+//        dd($users);
         // Check request type
         if ($request->ajax()) { // Axios request
             // Send data to view
@@ -59,17 +69,21 @@ class MessagesController extends Controller
     public function conversation(Request $request, $locale = 'hy', $user_id)
     {
         // Call socket
-        broadcast(new UserJoined(Auth::user()->id));
-
+//        broadcast(new UserJoined(Auth::user()->id));
+//        Session::put('active_chat_user', $user_id);
+//        Session::save();
         // Get middleware data
         $data = $request->data;
-
         // Get users data
-        $users = User::where('id', '!=', Auth::user()->id)->orderBy('id', 'desc')->get();
-
+//        $users = User::where('id', '!=', Auth::user()->id)->orderBy('id', 'desc')->get();
+        $users_ids = ChatUserMessage::where('sender_id', Auth::user()->id)->orWhere('receiver_id', Auth::user()->id)->distinct('sender_id', 'receiver_id')->get(['sender_id', 'receiver_id'])->toArray();
+        $array_user_values = [];
+        foreach ($users_ids as $elem) {
+            array_push($array_user_values, $elem['sender_id'] != Auth::user()->id ? $elem['sender_id'] : $elem['receiver_id']);
+        }
+        $users = User::whereIn('id', $array_user_values)->get();
         // Get friend data
         $friend = User::findOrFail($user_id);
-
         // Get messages data
         $messages = ChatUserMessage::with('message')
             ->where(['sender_id' => Auth::user()->id, 'receiver_id' => $friend->id])
@@ -81,30 +95,39 @@ class MessagesController extends Controller
             ->get();
 
         // Push data
+        $has_chat = true;
+        $active_chat_user = $user_id;
         $data['users'] = $users;
         $data['friend'] = $friend;
         $data['messages'] = $messages;
-        $data['has_chat'] = true;
+        $data['has_chat'] = $has_chat;
+        $data['active_chat_user'] = $active_chat_user;
         $data['page_name_account_aside'] = 'messages';
 
         // Meke unreaded messages count update data
         $update_data = array(
             'seen_status' => 1
         );
-
         // Update
         $unreaded_messages = ChatUserMessage::where(['receiver_id' => Auth::user()->id, 'sender_id' => $friend->id, 'seen_status' => 0])->update($update_data);
-
         // Get unreaded messages
         $user_unreaded_messages_count = ChatUserMessage::where(['receiver_id' => Auth::user()->id, 'seen_status' => 0])->count();
+        $auth_user_unread_messages = ChatUserMessage::where(['receiver_id' => Auth::user()->id, 'seen_status' => 0])->distinct('sender_id')->get();
 
+//        @dump($user_unreaded_messages_count);
         // Push data
         $data['user_unreaded_messages_count'] = $user_unreaded_messages_count;
-
+        $data['auth_user_unread_messages'] = $auth_user_unread_messages;
         // Chek request type
         if ($request->ajax()) { // Axios request
             // Send data to view
-            return view('account.messages.conversation-only')->with($data);
+
+            return response()
+                ->json([
+                    'view' => view('account.messages.conversation-only', compact('active_chat_user','has_chat','messages','users', 'user_unreaded_messages_count', 'auth_user_unread_messages', 'friend'))->render(),
+                    'data' => $data,
+                ]);
+//            return view('account.messages.conversation-only',compact('user_unreaded_messages_count','auth_user_unread_messages'))->with($data);
         } else {
             // Send data to view
             return view('account.messages.conversation')->with($data);

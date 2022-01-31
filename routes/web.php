@@ -32,8 +32,8 @@ Route::get('/clear-cache', function() {
 // Make route group that included localization an go to controller from middleware Index
 Route::group([
     'prefix' => '{locale?}',
-//    'middleware' => 'Index',
-    'middleware' => ['Index', 'CheckPostFailed']
+    'middleware' => 'Index',
+//    'middleware' => ['Index', 'CheckPostFailed']
 ], function () {
     // ------------------- PAGES --------------------------
 

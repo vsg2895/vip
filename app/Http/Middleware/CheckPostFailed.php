@@ -28,12 +28,13 @@ class CheckPostFailed
     public function handle($request, Closure $next)
     {
         $url_permissible_urls = [
-            'spare_store' => ['sel-spare-store', 'add-post-store-spare', 'create-post-level-3-spare', 'create-post-level-4','del.video'],
-            'post' => ['create-post-level-2', 'add-post-store', 'create-post-level-3', 'create-post-level-4','del.video']
+            'spare_store' => ['sel-spare-store', 'add-post-store-spare', 'create-post-level-3-spare', 'create-post-level-4', 'del.video'],
+            'post' => ['create-post-level-2', 'add-post-store', 'create-post-level-3', 'create-post-level-4', 'del.video']
         ];
         $previous_name = Route::getRoutes()->match(
             Request::create(URL::previous())
         )->getName();
+//        dd($previous_name);
         $current_name = Route::currentRouteName();
 //        dump($previous_name);
 //        dump($current_name);

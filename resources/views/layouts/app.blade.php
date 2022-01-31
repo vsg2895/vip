@@ -179,6 +179,7 @@
 
 @if(\Request::segment(2) == 'account')
     <!-- List Page -->
+    @routes
     <script src="{{ asset($assets_path.'/js/pages/account.js')}}"></script>
 @endif
 

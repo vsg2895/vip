@@ -603,6 +603,27 @@ header .currency-current-item:hover, header .language-current-item:hover, header
 
 }
 
+#postsTabContent .item-card-row .card-title {
+
+    padding: 0 !important;
+    font-size: 1.3rem !important;
+    background: transparent !important;
+}
+
+#wishlistTabContent .item-card-row .card-title {
+
+    padding: 0 !important;
+    font-size: 1.3rem !important;
+    background: transparent !important;
+}
+
+.not-background-p {
+
+    padding: 0 !important;
+    font-size: 1.3rem !important;
+    background: transparent !important;
+}
+
 .in_gray_color {
     color: #707070;
 }
@@ -618,9 +639,6 @@ header .currency-current-item:hover, header .language-current-item:hover, header
 
 
 /* Message Icon End*/
-
-
-
 
 
 #message_icon:hover {
@@ -2442,6 +2460,10 @@ label input[type="radio"]:hover {
     padding: 20px 40px;
 }
 
+.account-content .clearfix {
+    background: transparent;
+}
+
 @media (max-width: 992px) {
     .account-content {
         padding: 20px;
@@ -2473,6 +2495,14 @@ label input[type="radio"]:hover {
     margin-bottom: 20px;
     padding: 5px;
     border-radius: 10px;
+    position: relative;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+.new-message-in-user-list {
+    color: cornflowerblue;
 }
 
 .chat-user-list.active {

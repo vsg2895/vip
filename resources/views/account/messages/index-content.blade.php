@@ -19,13 +19,13 @@
         <!-- Write Message -->
         <div class="row w-100 d-block write-chat-area">
             <!-- Text Field -->
-            <textarea class="input-default p-2 w-100" data-description="false" form="sendMessageForm{{Auth::user()->id}}" name="message" rows="3"></textarea>
+            <textarea class="input-default p-2 w-100" data-description="false" form="sendMessageForm" name="message" rows="3"></textarea>
 
             <!-- Send Button -->
-            <form id="sendMessageForm{{Auth::user()->id}}" action="{{ route('account-messages-send-message', ['locale' => app()->getLocale(), 'receiver_id' => '0']) }}" method="post">
+            <form id="sendMessageForm" data-id="{{ Auth::user()->id }}" action="{{ route('account-messages-send-message', ['locale' => app()->getLocale(), 'receiver_id' => '0']) }}" method="post">
                 @csrf
                 <!-- Button -->
-                <button form="sendMessageForm{{Auth::user()->id}}" type="submit" class="btn btn-main text-light mt-2 btn-lg float-right">{{ translating('send') }}</button>
+                <button form="sendMessageForm" type="submit" class="btn btn-main text-light mt-2 btn-lg float-right">{{ translating('send') }}</button>
                 <!-- Clear -->
                 <div class="clearfix"></div>
             </form>
